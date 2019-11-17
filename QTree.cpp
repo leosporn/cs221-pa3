@@ -95,9 +95,10 @@ void QTree::split( Node *t ) {
  * return NULL if this node is not in the QTree.
  */
 QTree::Node * QTree::NNbr(Node *t) {
-
-  /* YOUR CODE HERE */
-
+  int x = t->upLeft->first;
+  int y = t->upLeft->second;
+  int h = t->size;
+  return find(pair<int, int>(x, y - h), h);
 }
 
 /* SNbr(t)
@@ -105,9 +106,10 @@ QTree::Node * QTree::NNbr(Node *t) {
  * return NULL if this node is not in the QTree.
  */
 QTree::Node * QTree::SNbr(Node *t) {
-
-  /* YOUR CODE HERE */
-
+  int x = t->upLeft->first;
+  int y = t->upLeft->second;
+  int h = t->size;
+  return find(pair<int, int>(x, y + h), h);
 }
 
 /* ENbr(t)
@@ -115,9 +117,10 @@ QTree::Node * QTree::SNbr(Node *t) {
  * return NULL if this node is not in the QTree.
  */
 QTree::Node * QTree::ENbr(Node *t) {
-
-  /* YOUR CODE HERE */
-
+  int x = t->upLeft->first;
+  int y = t->upLeft->second;
+  int h = t->size;
+  return find(pair<int, int>(y + h), h);
 }
 
 /* WNbr(t)
@@ -125,13 +128,13 @@ QTree::Node * QTree::ENbr(Node *t) {
  * return NULL if this node is not in the QTree.
  */
 QTree::Node * QTree::WNbr(Node *t) {
-
-  /* YOUR CODE HERE */
-
+  int x = t->upLeft->first;
+  int y = t->upLeft->second;
+  int h = t->size;
+  return find(pair<int, int>(y - h), h);
 }
 
 bool QTree::write(string const & fileName){
-
   /* YOUR CODE HERE */
 
 
@@ -140,14 +143,11 @@ bool QTree::write(string const & fileName){
 }
 
 void QTree::clear() {
-
-  /* YOUR CODE HERE */
   deleteNode(root);
 }
 
 
 void QTree::copy(const QTree & orig) {
-
   /* YOUR CODE HERE */
 
 }
@@ -169,4 +169,25 @@ int QTree::im2pow2(const PNG & im) {
 
 pair<int, int> QTree::initUpLeft() {
   return pair<int, int>(0, 0);
+}
+
+QTree::Node * QTree::find(pair<int, int> ul, int h, const Node * t = root) {
+  if (t == NULL || t->size < h || isLeaf(t)) { return NULL; }
+  if (t->size == h) { return t->upLeft == ul; }
+  int x = ul->first  - t->upLeft->first;
+  int y = ul->second - t->upLeft->second;
+  int s = t->size / 2;
+  if (0 <= x && x < s && 0 <= y && y < s) {
+    return find(ul, h, t->nw);
+  }
+  if (s <= x && x < s * 2 && 0 <= y && y < s) {
+    return find(ul, h, t->ne);
+  }
+  if (0 <= x && x < s && s <= y && y < s * 2) {
+    return find(ul, h, t->sw);
+  }
+  if (s <= x && x < s * 2 && s <= y && y < s * 2) {
+    return find(ul, h, t->se);
+  }
+  return NULL;
 }
