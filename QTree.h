@@ -205,6 +205,7 @@ class QTree {
 
   /* private helper functions */
 
+  void deleteNode(Node * t);
   int im2pow2(const PNG & im);
   pair<int, int> initUpLeft();
 

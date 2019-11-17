@@ -142,7 +142,7 @@ bool QTree::write(string const & fileName){
 void QTree::clear() {
 
   /* YOUR CODE HERE */
-
+  deleteNode(root);
 }
 
 
@@ -153,6 +153,15 @@ void QTree::copy(const QTree & orig) {
 }
 
 /* private helper functions */
+
+void QTree::deleteNode(Node * t) {
+  if (t == NULL) { return; }
+  deleteNode(t->nw);
+  deleteNode(t->ne);
+  deleteNode(t->sw);
+  deleteNode(t->se);
+  t = NULL;
+}
 
 int QTree::im2pow2(const PNG & im) {
   return biggestPow2(std::min((int) im.width(), (int) im.height()));
