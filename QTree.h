@@ -60,7 +60,7 @@ class QTree {
    * Destroys all of the memory associated with the
    * current QTree. This function should ensure that
    * memory does not leak on destruction of a QTree.
-   * 
+   *
    * @see QTree.cpp
    */
   ~QTree();
@@ -77,7 +77,7 @@ class QTree {
   QTree(const QTree & other);
 
   /**
-   * Overloaded assignment operator for QTree. 
+   * Overloaded assignment operator for QTree.
    * Part of the Big Three that we must define because the class
    * allocates dynamic memory. This uses your implementation
    * of the copy and clear funtions.
@@ -92,7 +92,7 @@ class QTree {
 
   /**
    * Constructor that builds a QTree out of the given PNG.
-   * 
+   *
    * The QTree represents the subimage from (0,0) to (2^k,2^k) for the
    * largest possible integer k.
    * Every node corresponds to a square of pixels in the original PNG,
@@ -134,8 +134,8 @@ class QTree {
    * (leaf.size X leaf.size pixels with origin leaf.upLeft) of the
    * QTree using the leaf's average color for the entire square.
    * If the QTree has a frameColor, the 1-pixel border in each leaf
-   * square is colored with the frameColor. 
-   * It then writes the image to file fileName and 
+   * square is colored with the frameColor.
+   * It then writes the image to file fileName and
    * returns any error returned by the write to file.
    * return(im.writeToFile(fileName))
    * You may want a recursive helper function for this one.
@@ -203,9 +203,13 @@ class QTree {
    */
   void copy(const QTree & other);
 
-  /* =================== end of private PA3 functions ============== */
-  
-};
-  
-#endif
+  /* private helper functions */
 
+  int im2pow2(const PNG & im);
+  pair<int, int> initUpLeft();
+
+  /* =================== end of private PA3 functions ============== */
+
+};
+
+#endif

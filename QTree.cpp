@@ -44,10 +44,7 @@ QTree::QTree(PNG & imIn, int leafB, RGBAPixel frameC, bool bal)
   : leafBound(leafB), balanced(bal), drawFrame(true), frameColor(frameC)
 { /* YOUR CODE HERE */
   im = imIn;
-  root = new Node(im,
-                  pair<int, int>(0, 0),
-                  biggestPow2(std::min((int) im.width(), (int) im.height())),
-                  NULL);
+  root = new Node(im, initUpLeft(), im2pow2(im), NULL);
   numLeaf = 1;
   while (numLeaf < leafBound) {
     // do Splits
@@ -59,10 +56,11 @@ QTree::QTree(PNG & imIn, int leafB, RGBAPixel frameC, bool bal)
 QTree::QTree(PNG & imIn, int leafB, bool bal)
   : leafBound(leafB), balanced(bal), drawFrame(false)
 { /* YOUR CODE HERE */
-  // TODO: make root
-  // TODO: make numLeaf
   im = imIn;
   frameColor = NULL;
+
+  // TODO: make root
+  // TODO: make numLeaf
 }
 
 
@@ -74,6 +72,9 @@ bool QTree::isLeaf( Node *t ) {
 void QTree::split( Node *t ) {
 
   /* YOUR CODE HERE */
+  if (t->size == 1) {
+    return;
+  }
 
   // FOR BALANCED QTREES-------------------------------------------------
   // A split might cause one or two nbrs of the parent of t to split
@@ -149,4 +150,14 @@ void QTree::copy(const QTree & orig) {
 
   /* YOUR CODE HERE */
 
+}
+
+/* private helper functions */
+
+int QTree::im2pow2(const PNG & im) {
+  return biggestPow2(std::min((int) im.width(), (int) im.height()));
+}
+
+pair<int, int> QTree::initUpLeft() {
+  return pair<int, int>(0, 0);
 }
