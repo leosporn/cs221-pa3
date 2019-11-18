@@ -23,7 +23,9 @@ int main()
   // use it to build a Qtree with approximately
   // 200 leaves and with each leaf square framed by
   // a black 1-pixel border
-  QTree t1(im1,10,RGBAPixel(0,0,0));
+  std::cout << "Building QTree... " << std::endl;
+  QTree t1(im1,10,RGBAPixel(0,0,0),false);
+  std::cout << "DONE" << std::endl;
   // write it to a file
   t1.write("images/out-smallFrame.png");
 
@@ -88,6 +90,6 @@ int main()
   QTree t5b(im5,5000,RGBAPixel(100,100,100),true);
   t5b.write("images/out-kleeFrameBal.png");
   std::cout << "Finished Test 5" << std::endl;
-
+  
   return 0;
 }

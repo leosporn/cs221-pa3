@@ -39,6 +39,10 @@ class QTree {
     // Node constructors
     Node(PNG & imIn, pair<int,int> ul, int size, Node *par);
 
+    // Comparison operators
+    bool operator<(const Node * & other) const;
+    bool operator>(const Node * & other) const;
+
     pair<int,int> upLeft;	// upper-left coords of Node's subimage
     int size;			// side length of Node's subimage in pixels
     Node * parent; // parent
@@ -209,8 +213,13 @@ class QTree {
   Node * copyNode(const Node * t, const PNG & im);
   int im2pow2(const PNG & im);
   pair<int, int> initUpLeft();
+  pair<int, int> nwChildUpLeft(Node * t);
+  pair<int, int> neChildUpLeft(Node * t);
+  pair<int, int> swChildUpLeft(Node * t);
+  pair<int, int> seChildUpLeft(Node * t);
   Node * findNbr(pair<int, int> ul, int h);
   Node * findNbr(pair<int, int> ul, int h, Node * t);
+  void writeSquare(Node * t);
 
   /* =================== end of private PA3 functions ============== */
 

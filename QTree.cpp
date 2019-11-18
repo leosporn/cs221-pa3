@@ -42,35 +42,48 @@ QTree & QTree::operator=(const QTree & rhs){
 
 QTree::QTree(PNG & imIn, int leafB, RGBAPixel frameC, bool bal)
   : leafBound(leafB), balanced(bal), drawFrame(true), frameColor(frameC)
-{ /* YOUR CODE HERE */
+{
   im = imIn;
   root = new Node(im, initUpLeft(), im2pow2(im), NULL);
-  numLeaf = 1;
   split(root);
 }
 
 
 QTree::QTree(PNG & imIn, int leafB, bool bal)
   : leafBound(leafB), balanced(bal), drawFrame(false)
-{ /* YOUR CODE HERE */
+{
   im = imIn;
   frameColor = NULL;
   root = new Node(im, initUpLeft(), im2pow2(im), NULL);
-  numLeaf = 1;
   split(root);
 }
 
 
 bool QTree::isLeaf( Node *t ) {
-  /* YOUR CODE HERE */
   return t->nw == NULL && t->ne == NULL && t->sw == NULL && t->se == NULL;
 }
 
 void QTree::split( Node *t ) {
-
   /* YOUR CODE HERE */
-  if (t->size == 1) {
-    return;
+  numLeaf = 0;
+  std::priority_queue<Node *, std::vector<Node *>, std::greater<Node *>> pq;
+  pq.push(t);
+  numLeaf++;
+
+  while (numLeaf < leafBound) {
+    Node * t = pq.top();
+    std::cout << t->size << ", " << t->var << std::endl;
+    pq.pop();
+    numLeaf--;
+    t->nw = new Node(im, nwChildUpLeft(t), t->size >> 1, t);
+    if (t->nw->size > 0) { pq.push(t->nw); numLeaf++; }
+    t->ne = new Node(im, neChildUpLeft(t), t->size >> 1, t);
+    if (t->ne->size > 0) { pq.push(t->ne); numLeaf++; }
+    t->sw = new Node(im, swChildUpLeft(t), t->size >> 1, t);
+    if (t->sw->size > 0) { pq.push(t->sw); numLeaf++; }
+    t->se = new Node(im, seChildUpLeft(t), t->size >> 1, t);
+    if (t->se->size > 0) { pq.push(t->se); numLeaf++; }
+    //std::cout << numLeaf << std::endl;
   }
 
   // FOR BALANCED QTREES-------------------------------------------------
@@ -133,8 +146,7 @@ QTree::Node * QTree::WNbr(Node *t) {
 
 bool QTree::write(string const & fileName){
   /* YOUR CODE HERE */
-
-
+  writeSquare(root);
   // include the following line to write the image to file.
   return(im.writeToFile(fileName));
 }
@@ -145,6 +157,7 @@ void QTree::clear() {
 
 
 void QTree::copy(const QTree & orig) {
+  im = orig.im;
   root = copyNode(orig.root, orig.im);
 }
 
@@ -178,6 +191,34 @@ pair<int, int> QTree::initUpLeft() {
   return pair<int, int>(0, 0);
 }
 
+pair<int, int> QTree::nwChildUpLeft(Node * t) {
+  pair<int, int> ret = (t->upLeft);
+  ret.first  += 0;
+  ret.second += 0;
+  return ret;
+}
+
+pair<int, int> QTree::swChildUpLeft(Node * t) {
+  pair<int, int> ret = (t->upLeft);
+  ret.first  += 0;
+  ret.second += t->size >> 1;
+  return ret;
+}
+
+pair<int, int> QTree::neChildUpLeft(Node * t) {
+  pair<int, int> ret = (t->upLeft);
+  ret.first  += t->size >> 1;;
+  ret.second += 0;
+  return ret;
+}
+
+pair<int, int> QTree::seChildUpLeft(Node * t) {
+  pair<int, int> ret = (t->upLeft);
+  ret.first  += t->size >> 1;
+  ret.second += t->size >> 1;
+  return ret;
+}
+
 QTree::Node * QTree::findNbr(pair<int, int> ul, int h) {
   return findNbr(ul, h, root);
 }
@@ -194,4 +235,36 @@ QTree::Node * QTree::findNbr(pair<int, int> ul, int h, Node * t) {
   if (0 <= x && x < v && v <= y && y < u) { return findNbr(ul, h, t->sw); }
   if (v <= x && x < u && v <= y && y < u) { return findNbr(ul, h, t->se); }
   return NULL;
+}
+
+bool QTree::Node::operator<(const Node * & other) const {
+  return this->var < other->var;
+}
+
+bool QTree::Node::operator>(const Node * & other) const {
+  return this->var > other->var;
+}
+
+void QTree::writeSquare(Node * t) {
+  if (isLeaf(t)) {
+    int x = (t->upLeft).first;
+    int y = (t->upLeft).second;
+    int z = t->size;
+    for (int i = 0; i < z; i++) {
+      for (int j = 0; j < z; j++) {
+        //std::cout << x + i << ", " << y + j << std::endl;
+        RGBAPixel * pixel = im.getPixel(x + i, y + j);
+        if (drawFrame && (i == 0 || i + 1 == z || j == 0 || j + 1 == z)) {
+          (* pixel) = frameColor;
+        } else {
+          (*pixel) = t->avg;
+        }
+      }
+    }
+  } else {
+    writeSquare(t->nw);
+    writeSquare(t->ne);
+    writeSquare(t->sw);
+    writeSquare(t->se);
+  }
 }

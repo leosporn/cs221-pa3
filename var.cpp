@@ -36,6 +36,6 @@ double varAndAvg(PNG & im, pair<int,int> ul, int size, RGBAPixel & avg) {
       sumB += (p->b - avg.b)*(p->b - avg.b);
     }
   }
-  //  return (sumR/n + sumG/n + sumB/n);
-  return (sumR + sumG + sumB);
+  //return (sumR/n + sumG/n + sumB/n);
+  return (sumR + sumG + sumB) / (double) n;
 }
