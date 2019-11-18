@@ -46,10 +46,7 @@ QTree::QTree(PNG & imIn, int leafB, RGBAPixel frameC, bool bal)
   im = imIn;
   root = new Node(im, initUpLeft(), im2pow2(im), NULL);
   numLeaf = 1;
-  while (numLeaf < leafBound) {
-    // do Splits
-    break;
-  }
+  split(root);
 }
 
 
@@ -95,10 +92,10 @@ void QTree::split( Node *t ) {
  * return NULL if this node is not in the QTree.
  */
 QTree::Node * QTree::NNbr(Node *t) {
-  int x = t->upLeft->first;
-  int y = t->upLeft->second;
+  int x = (t->upLeft).first;
+  int y = (t->upLeft).second;
   int h = t->size;
-  return find(pair<int, int>(x, y - h), h);
+  return findNbr(pair<int, int>(x, y - h), h);
 }
 
 /* SNbr(t)
@@ -106,10 +103,10 @@ QTree::Node * QTree::NNbr(Node *t) {
  * return NULL if this node is not in the QTree.
  */
 QTree::Node * QTree::SNbr(Node *t) {
-  int x = t->upLeft->first;
-  int y = t->upLeft->second;
+  int x = (t->upLeft).first;
+  int y = (t->upLeft).second;
   int h = t->size;
-  return find(pair<int, int>(x, y + h), h);
+  return findNbr(pair<int, int>(x, y + h), h);
 }
 
 /* ENbr(t)
@@ -117,10 +114,10 @@ QTree::Node * QTree::SNbr(Node *t) {
  * return NULL if this node is not in the QTree.
  */
 QTree::Node * QTree::ENbr(Node *t) {
-  int x = t->upLeft->first;
-  int y = t->upLeft->second;
+  int x = (t->upLeft).first;
+  int y = (t->upLeft).second;
   int h = t->size;
-  return find(pair<int, int>(y + h), h);
+  return findNbr(pair<int, int>(x + h, y), h);
 }
 
 /* WNbr(t)
@@ -128,10 +125,10 @@ QTree::Node * QTree::ENbr(Node *t) {
  * return NULL if this node is not in the QTree.
  */
 QTree::Node * QTree::WNbr(Node *t) {
-  int x = t->upLeft->first;
-  int y = t->upLeft->second;
+  int x = (t->upLeft).first;
+  int y = (t->upLeft).second;
   int h = t->size;
-  return find(pair<int, int>(y - h), h);
+  return findNbr(pair<int, int>(x - h, y), h);
 }
 
 bool QTree::write(string const & fileName){
@@ -171,23 +168,20 @@ pair<int, int> QTree::initUpLeft() {
   return pair<int, int>(0, 0);
 }
 
-QTree::Node * QTree::find(pair<int, int> ul, int h, const Node * t = root) {
+QTree::Node * QTree::findNbr(pair<int, int> ul, int h) {
+  return findNbr(ul, h, root);
+}
+
+QTree::Node * QTree::findNbr(pair<int, int> ul, int h, Node * t) {
   if (t == NULL || t->size < h || isLeaf(t)) { return NULL; }
-  if (t->size == h) { return t->upLeft == ul; }
-  int x = ul->first  - t->upLeft->first;
-  int y = ul->second - t->upLeft->second;
-  int s = t->size / 2;
-  if (0 <= x && x < s && 0 <= y && y < s) {
-    return find(ul, h, t->nw);
-  }
-  if (s <= x && x < s * 2 && 0 <= y && y < s) {
-    return find(ul, h, t->ne);
-  }
-  if (0 <= x && x < s && s <= y && y < s * 2) {
-    return find(ul, h, t->sw);
-  }
-  if (s <= x && x < s * 2 && s <= y && y < s * 2) {
-    return find(ul, h, t->se);
-  }
+  if (t->size == h) { return t->upLeft == ul ? t : NULL; }
+  int x = ul.first  - (t->upLeft).first;
+  int y = ul.second - (t->upLeft).second;
+  int u = t->size;
+  int v = u >> 1;
+  if (0 <= x && x < v && 0 <= y && y < v) { return findNbr(ul, h, t->nw); }
+  if (v <= x && x < u && 0 <= y && y < v) { return findNbr(ul, h, t->ne); }
+  if (0 <= x && x < v && v <= y && y < u) { return findNbr(ul, h, t->sw); }
+  if (v <= x && x < u && v <= y && y < u) { return findNbr(ul, h, t->se); }
   return NULL;
 }

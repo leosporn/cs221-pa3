@@ -208,6 +208,8 @@ class QTree {
   void deleteNode(Node * t);
   int im2pow2(const PNG & im);
   pair<int, int> initUpLeft();
+  Node * findNbr(pair<int, int> ul, int h);
+  Node * findNbr(pair<int, int> ul, int h, Node * t);
 
   /* =================== end of private PA3 functions ============== */
 
