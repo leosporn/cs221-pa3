@@ -55,9 +55,9 @@ QTree::QTree(PNG & imIn, int leafB, bool bal)
 { /* YOUR CODE HERE */
   im = imIn;
   frameColor = NULL;
-
-  // TODO: make root
-  // TODO: make numLeaf
+  root = new Node(im, initUpLeft(), im2pow2(im), NULL);
+  numLeaf = 1;
+  split(root);
 }
 
 
@@ -145,7 +145,6 @@ void QTree::clear() {
 
 
 void QTree::copy(const QTree & orig) {
-  /* YOUR CODE HERE */
   root = copyNode(orig.root, orig.im);
 }
 
