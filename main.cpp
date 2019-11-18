@@ -16,6 +16,7 @@ void testClear() {
 
 int main()
 {
+  std::cout << "Beginning tests" << std::endl;
   // read in an image
   PNG im1;
   im1.readFromFile("images/small.png");
@@ -37,10 +38,11 @@ int main()
   // check assignment
   t1copy = t1b;
   t1copy.write("images/out-smallFrameBalCopy.png");
-  
+
   // check clear
   testClear();
-  
+  std::cout << "Finished Test 1" << std::endl;
+
   // read in an image
   PNG im2;
   im2.readFromFile("images/colour.png");
@@ -50,6 +52,7 @@ int main()
   // use image to build a balanced QTree
   QTree t2b(im2,200,RGBAPixel(0,0,0),true);
   t2b.write("images/out-colourFrameBal.png");
+  std::cout << "Finished Test 2" << std::endl;
 
 
   // read in an image
@@ -61,6 +64,7 @@ int main()
   // use image to build a balanced QTree
   QTree t3b(im3,2000,true);
   t3b.write("images/out-adaBal.png");
+  std::cout << "Finished Test 3" << std::endl;
 
   // read in an image
   PNG im4;
@@ -71,6 +75,7 @@ int main()
   // use image to build a balanced QTree
   QTree t4b(im4,200,true);
   t4b.write("images/out-geoBal.png");
+  std::cout << "Finished Test 4" << std::endl;
 
 
   // read in an image
@@ -82,6 +87,7 @@ int main()
   // use image to build a balanced QTree
   QTree t5b(im5,5000,RGBAPixel(100,100,100),true);
   t5b.write("images/out-kleeFrameBal.png");
+  std::cout << "Finished Test 5" << std::endl;
 
   return 0;
 }

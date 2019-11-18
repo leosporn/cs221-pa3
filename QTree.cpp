@@ -146,7 +146,7 @@ void QTree::clear() {
 
 void QTree::copy(const QTree & orig) {
   /* YOUR CODE HERE */
-
+  root = copyNode(orig.root, orig.im);
 }
 
 /* private helper functions */
@@ -158,6 +158,17 @@ void QTree::deleteNode(Node * t) {
   deleteNode(t->sw);
   deleteNode(t->se);
   t = NULL;
+}
+
+QTree::Node * QTree::copyNode(const Node * t, const PNG & im) {
+  if (t == NULL) { return NULL; }
+  PNG imCopy = im;
+  Node * ret = new Node(imCopy, t->upLeft, t->size, t->parent);
+  ret->nw = copyNode(t->nw, imCopy);
+  ret->ne = copyNode(t->ne, imCopy);
+  ret->sw = copyNode(t->sw, imCopy);
+  ret->se = copyNode(t->se, imCopy);
+  return ret;
 }
 
 int QTree::im2pow2(const PNG & im) {

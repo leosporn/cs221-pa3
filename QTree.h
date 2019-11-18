@@ -206,6 +206,7 @@ class QTree {
   /* private helper functions */
 
   void deleteNode(Node * t);
+  Node * copyNode(const Node * t, const PNG & im);
   int im2pow2(const PNG & im);
   pair<int, int> initUpLeft();
   Node * findNbr(pair<int, int> ul, int h);
